@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	"github.com/gofiber/fiber"
-	sighting "github.com/wakatara/spotter/controllers"
 	"github.com/wakatara/spotter/database"
 	"github.com/wakatara/spotter/models"
+	"github.com/wakatara/spotter/router"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
@@ -18,7 +18,7 @@ func main() {
 	initDatabase()
 	defer database.DBConn.Close()
 
-	setupRoutes(app)
+	router.SetupRoutes(app)
 
 	app.Listen(3000)
 
@@ -35,13 +35,4 @@ func initDatabase() {
 	database.DBConn.AutoMigrate(&models.Sighting{})
 	database.DBConn.AutoMigrate(&models.Venue{})
 	fmt.Println("Database Spotter table migrated")
-}
-
-func setupRoutes(app *fiber.App) {
-	// app.Get("/", func(c *fiber.Ctx) { c.Render("index", fiber.Map{"Title": "Hello World"}) })
-	app.Get("/api/v1/sighting", sighting.GetAllSightings)
-	app.Get("/api/v1/sighting/:id", sighting.GetSighting)
-	app.Post("/api/v1/sighting", sighting.NewSighting)
-	// app.Put("/api/v1/sighting/:id", species.UpdateSighting)
-	app.Delete("/api/v1/sighting/:id", sighting.DeleteSighting)
 }
